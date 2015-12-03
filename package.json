@@ -1,0 +1,30 @@
+{
+  "name": "acs-processing",
+  "version": "1.0.0",
+  "description": "automatically load acs data into a postgresql database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/royhobbstn/acs-processing.git"
+  },
+  "keywords": [
+    "data",
+    "acs",
+    "census",
+    "postgresql"
+  ],
+  "author": "Daniel Trone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/royhobbstn/acs-processing/issues"
+  },
+  "homepage": "https://github.com/royhobbstn/acs-processing#readme",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "request": "^2.67.0",
+    "unzip": "^0.1.11"
+  }
+}
