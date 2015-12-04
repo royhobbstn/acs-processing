@@ -1,3 +1,31 @@
+OUTSIDE OF PROCESS TREE (only run once to extract metadata information / info used in scaffolding)
+read files in directory, record all column names, create sql statements
+-----------
+dl_scan_files.js - downloads all needed files
+scan_files.js - creates scaffold.sql and createtables.sql
+
+PROCESS TREE
 dl_and_extract.js
-scaffold.js
+scaffold.js (creates temp tables for data load)
+
 upload_geo.js
+upload_files.js (read each file in directory.  add to corresponding table - get correct table by filename characters)
+
+geo_operate.js (delete fileid column, lowercase stusab, create geonum)
+
+create_tables.js (run query using createtables.sql)
+
+FILES CREATED ABOVE WERE TEMPFILES
+
+prod_geo.js (create geo key tables)
+prod_files.js (join and create final data tables)
+
+prod_keys.js (add relevant keys for all tables)
+
+cleanup.js (cleanup temp files on drive)
+streamline.js (cleanup temp files on database)
+
+
+TO DO
+-----
+connection string file
