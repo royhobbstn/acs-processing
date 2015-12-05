@@ -112,20 +112,20 @@ filesEE.on('createtables', function() {
 
         if (splitkey[0] != prevtable) {
             if (i !== 0) {
-                ctsql = ctsql + " FROM " + prevseq + " natural join geo; "
+                ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + prevtable + " ADD PRIMARY KEY (geonum); "
             }
             prevtable = splitkey[0];
             prevseq = fieldarray[i].seq;
             ctsql = ctsql + "CREATE TABLE " + splitkey[0] + " AS SELECT geonum";
         }
 
-        ctsql = ctsql + ", " + fieldarray[i].key ;
+        ctsql = ctsql + ", to_number(" + fieldarray[i].key + ",'999999') AS " + (fieldarray[i].key).replace(/_/g, '');
 
 
     }
 
     //add to end of ctsql
-    ctsql = ctsql + " FROM " + prevseq + " natural join geo; "
+    ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + splitkey[0] + " ADD PRIMARY KEY (geonum); "
 
 
     //save file as createtables.sql
