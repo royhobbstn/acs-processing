@@ -5,16 +5,19 @@ X - don't need to run again for now
 ------
 
 X dl_scan_files.js - downloads all needed files
-scan_files.js - creates scaffold.sql and createtables.sql
+scan_files.js - creates scaffold.sql, createtables.sql an columnvalid.sql
 
 PROCESS TREE
 X dl_and_extract.js
+setup.js (creates schemas)
 scaffold.js (creates temp tables for data load)
 
 upload_geo.js
 upload_files.js (read each file in directory.  add to corresponding table - get correct table by filename characters)
 
 geo_operate.js (delete fileid column, lowercase stusab, create geonum)
+
+column_valid.js - (uploaded files have blank values and '.' for values.  need to be changed to null before conversion to numeric or there will be errors.)
 
 create_tables.js (run query using createtables.sql)
 

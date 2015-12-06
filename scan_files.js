@@ -7,7 +7,7 @@ var fs = require('fs'),
 var alljson = [];
 var allfilenames = [];
 var sql = "";
-
+var cvsql = "";
 
 // this event will be called when all files have been added to json
 filesEE.on('json_complete', function() {
@@ -19,9 +19,11 @@ filesEE.on('json_complete', function() {
             sql = sql + ' CONSTRAINT ' + allfilenames[i - 1].toLowerCase() + '_pkey PRIMARY KEY (stusab, logrecno) );';
         }
         sql = sql + " CREATE TABLE IF NOT EXISTS " + allfilenames[i].toLowerCase() + " (";
+        
         for (var key in alljson[i].E[0]) {
             //they have to all be text.  some acs fields are just '.'
             sql = sql + " " + key.toLowerCase() + " text,";
+            cvsql = cvsql + "UPDATE " + allfilenames[i].toLowerCase() + " set " + key.toLowerCase() + "=NULL where " + key.toLowerCase() + "='.' or " + key.toLowerCase() + "=''; ";
         }
     }
 
@@ -35,9 +37,18 @@ filesEE.on('json_complete', function() {
         }
 
         console.log("The scaffold.sql file was saved!");
+
+    });
+  
+    //output newsql to file that can be read
+    fs.writeFile("columnvalid.sql", cvsql, function(err) {
+        if (err) {
+            return console.log(err);
+        }
+
+        console.log("The columnvalid.sql file was saved!");
         filesEE.emit('createtables'); // trigger files_ready event
     });
-
 });
 
 // read all files from current directory
@@ -119,7 +130,7 @@ filesEE.on('createtables', function() {
             ctsql = ctsql + "CREATE TABLE " + splitkey[0] + " AS SELECT geonum";
         }
 
-        ctsql = ctsql + ", to_number(" + fieldarray[i].key + ",'999999') AS " + (fieldarray[i].key).replace(/_/g, '');
+        ctsql = ctsql + ", " + fieldarray[i].key + "::numeric AS " + (fieldarray[i].key).replace(/_/g, '');
 
 
     }

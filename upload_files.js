@@ -1,6 +1,10 @@
 var fs = require('fs');
 var pg = require('pg');
-var conString = "postgres://postgres:eAs456!!$@acsprocessing.c3w3zliliagq.us-west-2.rds.amazonaws.com:5432/acs";
+
+var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
+
+var conString = "postgres://"+obj.name+":"+obj.password+"@"+obj.host+":"+obj.port+"/"+obj.db;
+
 var copyFrom = require('pg-copy-streams').from;
 
 //All other Geo's File
