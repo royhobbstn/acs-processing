@@ -3,5 +3,5 @@
   "password": "eAs456!!$",
   "host": "acs.c3w3zliliagq.us-west-2.rds.amazonaws.com",
   "port": "5432",
-  "db": "acs"
+  "db": "acs1014"
 }

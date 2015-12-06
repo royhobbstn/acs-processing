@@ -18,12 +18,12 @@ filesEE.on('json_complete', function() {
         if (i > 0) {
             sql = sql + ' CONSTRAINT ' + allfilenames[i - 1].toLowerCase() + '_pkey PRIMARY KEY (stusab, logrecno) );';
         }
-        sql = sql + " CREATE TABLE IF NOT EXISTS " + allfilenames[i].toLowerCase() + " (";
+        sql = sql + " CREATE TABLE IF NOT EXISTS data." + allfilenames[i].toLowerCase() + " (";
         
         for (var key in alljson[i].E[0]) {
             //they have to all be text.  some acs fields are just '.'
             sql = sql + " " + key.toLowerCase() + " text,";
-            cvsql = cvsql + "UPDATE " + allfilenames[i].toLowerCase() + " set " + key.toLowerCase() + "=NULL where " + key.toLowerCase() + "='.' or " + key.toLowerCase() + "=''; ";
+            cvsql = cvsql + "UPDATE data." + allfilenames[i].toLowerCase() + " set " + key.toLowerCase() + "=NULL where " + key.toLowerCase() + "='.' or " + key.toLowerCase() + "=''; ";
         }
     }
 
@@ -124,13 +124,13 @@ filesEE.on('createtables', function() {
 
         if (splitkey[0] != prevtable) {
             if (i !== 0) {
-                ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + prevtable + " ADD PRIMARY KEY (geonum); ";
-                moectsql = moectsql + " FROM moe" + prevseq + " natural join geo; ALTER TABLE " + prevtable + "_moe ADD PRIMARY KEY (geonum); ";
+                ctsql = ctsql + " FROM data." + prevseq + " natural join data.geo; ALTER TABLE data." + prevtable + " ADD PRIMARY KEY (geonum); ";
+                moectsql = moectsql + " FROM data.moe" + prevseq + " natural join data.geo; ALTER TABLE data." + prevtable + "_moe ADD PRIMARY KEY (geonum); ";
             }
             prevtable = splitkey[0];
             prevseq = fieldarray[i].seq;
-            ctsql = ctsql + "CREATE TABLE " + splitkey[0] + " AS SELECT geonum";
-          moectsql = moectsql + "CREATE TABLE " + splitkey[0] + "_moe AS SELECT geonum";
+            ctsql = ctsql + "CREATE TABLE data." + splitkey[0] + " AS SELECT geonum";
+          moectsql = moectsql + "CREATE TABLE data." + splitkey[0] + "_moe AS SELECT geonum";
           
         }
 
@@ -141,8 +141,8 @@ filesEE.on('createtables', function() {
     }
 
     //add to end of ctsql
-    ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + splitkey[0] + " ADD PRIMARY KEY (geonum); ";
-    moectsql = moectsql + " FROM moe" + prevseq + " natural join geo; ALTER TABLE " + splitkey[0] + "_moe ADD PRIMARY KEY (geonum); ";
+    ctsql = ctsql + " FROM data." + prevseq + " natural join data.geo; ALTER TABLE data." + splitkey[0] + " ADD PRIMARY KEY (geonum); ";
+    moectsql = moectsql + " FROM data.moe" + prevseq + " natural join data.geo; ALTER TABLE data." + splitkey[0] + "_moe ADD PRIMARY KEY (geonum); ";
   
 
     //save file as createtables.sql

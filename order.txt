@@ -9,8 +9,8 @@ scan_files.js - creates scaffold.sql, createtables.sql an columnvalid.sql
 
 PROCESS TREE
 X dl_and_extract.js
-setup.js (creates schemas) TODO - create data and search schema
-scaffold.js (creates temp tables for data load)
+
+scaffold.js creates data and search schema.  creates geo table. (creates temp tables for data load)
 
 upload_geo.js
 upload_files.js (read each file in directory.  add to corresponding table - get correct table by filename characters)

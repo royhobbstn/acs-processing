@@ -28,7 +28,7 @@ fs.readdir('temp/file1', function(err, files) {
                 //connect to db
                 pg.connect(conString, function(err, client, done) {
 
-                    var stream = client.query(copyFrom('COPY ' + prefix + 'seq' + thefn + ' FROM STDIN USING DELIMITERS \',\' CSV'));
+                    var stream = client.query(copyFrom('COPY data.' + prefix + 'seq' + thefn + ' FROM STDIN USING DELIMITERS \',\' CSV'));
                     var fileStream = fs.createReadStream('temp/file1/' + fntext[0] + '.txt')
 
                     fileStream.pipe(stream);
@@ -70,7 +70,7 @@ fs.readdir('temp/file2', function(err, files) {
                 //connect to db
                 pg.connect(conString, function(err, client, done) {
 
-                    var stream = client.query(copyFrom('COPY ' + prefix + 'seq' + thefn + ' FROM STDIN USING DELIMITERS \',\' CSV'));
+                    var stream = client.query(copyFrom('COPY data.' + prefix + 'seq' + thefn + ' FROM STDIN USING DELIMITERS \',\' CSV'));
                     var fileStream = fs.createReadStream('temp/file2/' + fntext[0] + '.txt')
 
                     fileStream.pipe(stream);
