@@ -94,6 +94,7 @@ filesEE.on('createtables', function() {
     var pushkey = {};
     var prevtable = "";
     var prevseq = "seq1";  
+    var moectsql ="";
 
     //for each file  - create an array of key values for fields and seq_tables
     for (var i = 0; i < alljson.length; i = i + 1) {
@@ -123,25 +124,30 @@ filesEE.on('createtables', function() {
 
         if (splitkey[0] != prevtable) {
             if (i !== 0) {
-                ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + prevtable + " ADD PRIMARY KEY (geonum); "
+                ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + prevtable + " ADD PRIMARY KEY (geonum); ";
+                moectsql = moectsql + " FROM moe" + prevseq + " natural join geo; ALTER TABLE " + prevtable + "_moe ADD PRIMARY KEY (geonum); ";
             }
             prevtable = splitkey[0];
             prevseq = fieldarray[i].seq;
             ctsql = ctsql + "CREATE TABLE " + splitkey[0] + " AS SELECT geonum";
+          moectsql = moectsql + "CREATE TABLE " + splitkey[0] + "_moe AS SELECT geonum";
+          
         }
 
         ctsql = ctsql + ", " + fieldarray[i].key + "::numeric AS " + (fieldarray[i].key).replace(/_/g, '');
+        moectsql = moectsql + ", " + fieldarray[i].key + "::numeric AS " + (fieldarray[i].key).replace(/_/g, '_moe');
 
 
     }
 
     //add to end of ctsql
-    ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + splitkey[0] + " ADD PRIMARY KEY (geonum); "
-
+    ctsql = ctsql + " FROM " + prevseq + " natural join geo; ALTER TABLE " + splitkey[0] + " ADD PRIMARY KEY (geonum); ";
+    moectsql = moectsql + " FROM moe" + prevseq + " natural join geo; ALTER TABLE " + splitkey[0] + "_moe ADD PRIMARY KEY (geonum); ";
+  
 
     //save file as createtables.sql
     //output sql to file that can be read
-    fs.writeFile("createtables.sql", ctsql, function(err) {
+    fs.writeFile("createtables.sql", ctsql+moectsql, function(err) {
         if (err) {
             return console.log(err);
         }
