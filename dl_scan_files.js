@@ -29,6 +29,14 @@ mkdirp('scan', function(err) {
 
         });
 
+    request('http://www2.census.gov/programs-surveys/acs/summary_file/2014/documentation/user_tools/ACS_5yr_Seq_Table_Number_Lookup.xls')
+        .pipe(fs.createWriteStream('scan/ACS_5yr_Seq_Table_Number_Lookup.xls'))
+        .on('close', function() {
+            console.log('Metadata File Written!');
+
+
+
+        });
 
 
 });

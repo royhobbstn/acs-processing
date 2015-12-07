@@ -4,28 +4,33 @@ read files in directory, record all column names, create sql statements
 X - don't need to run again for now
 ------
 
-X dl_scan_files.js - downloads all needed files
+--DL AND EXTRACT--
+X dl_scan_files.js - downloads all needed files - these are one time files like table structures - not geo specific
 X dl_and_extract.js - unzips files
 
-scan_files.js - creates scaffold.sql, createtables.sql an columnvalid.sql
+--METADATA CREATION--
+create_meta.js - creates metadata & loads to db
 
+--SCAFFOLD--
+scan_files.js - creates scaffold.sql, createtables.sql an columnvalid.sql
 scaffold.js - creates data and search schema.  creates geo table. (creates temp tables for data load)
 
+--UPLOAD DATA--
 upload_geo.js - upload geo tabular data
 upload_files.js - upload data from each file in directory to database
 
-geo_operate.js - (delete fileid column, lowercase stusab, create geonum. TODO create search.data, search.data_exp, search.key , create index/keys for geo tables)
-
+--PROCESS DATA & CREATE FINAL FILES--
+geo_operate.js - (delete fileid column, lowercase stusab, create geonum, geoid. create search.data, search.data_exp, search.key , create index/keys for geo tables)
 column_valid.js - (uploaded files have blank values and '.' for values.  need to be changed to null before conversion to numeric or there will be errors.)
-
 create_tables.js - (run query using createtables.sql)
 
 --POST PROCESSING--
-
 streamline.js (cleanup temp files on database)
-
 cleanup.js (cleanup temp files on drive)
 
+
+--TO DO--
+state select
 
 
 -------------
