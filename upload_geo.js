@@ -13,7 +13,7 @@ var copyFrom = require('pg-copy-streams').from;
 pg.connect(conString, function(err, client, done) {
 
     var stream = client.query(copyFrom('COPY data.geo FROM STDIN USING DELIMITERS \',\' CSV'));
-    var fileStream = fs.createReadStream('temp/file1/g20145de.csv')
+    var fileStream = fs.createReadStream('temp/file1/g20145co.csv')
 
     fileStream.pipe(stream);
     fileStream.on('end', done)
