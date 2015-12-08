@@ -1,30 +1,37 @@
+/*jslint node: true */
+"use strict";
+
 var fs = require('fs');
 var pg = require('pg');
 
-var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
+module.exports = function() {
 
-var conString = "postgres://"+obj.name+":"+obj.password+"@"+obj.host+":"+obj.port+"/"+obj.db;
+    var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
 
-var copyFrom = require('pg-copy-streams').from;
+    var conString = "postgres://" + obj.name + ":" + obj.password + "@" + obj.host + ":" + obj.port + "/" + obj.db;
 
-//All other Geo's File
-fs.readdir('temp/file1', function(err, files) {
-    if (err) throw err;
-    files.forEach(function(file) {
+    var copyFrom = require('pg-copy-streams').from;
 
-        var fntext = file.split('.');
+    //All other Geo's File
+    fs.readdir('temp/file1', function(err, files) {
+        if (err) throw err;
+        files.forEach(function(file) {
+
+            var fntext = file.split('.');
 
 
-          //grab seq number
-          var thefn=parseInt(fntext[0].substring(9, 12));
+            //grab seq number
+            var thefn = parseInt(fntext[0].substring(9, 12));
 
             //only doing estimate files and moe files - no geos
             if (fntext[0][0] === 'e' || fntext[0][0] === 'm') {
 
-              //table prefix of moe for Margin of Error Tables
-              var prefix="";
-              if(fntext[0][0] === 'm'){prefix="moe";}
-              
+                //table prefix of moe for Margin of Error Tables
+                var prefix = "";
+                if (fntext[0][0] === 'm') {
+                    prefix = "moe";
+                }
+
                 //connect to db
                 pg.connect(conString, function(err, client, done) {
 
@@ -42,31 +49,33 @@ fs.readdir('temp/file1', function(err, files) {
 
 
 
+        });
+
+        //filesEE.emit('json_complete'); // trigger files_ready event
+
     });
-  
-  //filesEE.emit('json_complete'); // trigger files_ready event
-  
-});
 
 
-//Tracts BGs file
-fs.readdir('temp/file2', function(err, files) {
-    if (err) throw err;
-    files.forEach(function(file) {
+    //Tracts BGs file
+    fs.readdir('temp/file2', function(err, files) {
+        if (err) throw err;
+        files.forEach(function(file) {
 
-        var fntext = file.split('.');
+            var fntext = file.split('.');
 
 
-          //grab seq number
-          var thefn=parseInt(fntext[0].substring(9, 12));
+            //grab seq number
+            var thefn = parseInt(fntext[0].substring(9, 12));
 
             //only doing estimate files and moe files - no geos
             if (fntext[0][0] === 'e' || fntext[0][0] === 'm') {
 
-              //table prefix of moe for Margin of Error Tables
-              var prefix="";
-              if(fntext[0][0] === 'm'){prefix="moe";}
-              
+                //table prefix of moe for Margin of Error Tables
+                var prefix = "";
+                if (fntext[0][0] === 'm') {
+                    prefix = "moe";
+                }
+
                 //connect to db
                 pg.connect(conString, function(err, client, done) {
 
@@ -84,8 +93,10 @@ fs.readdir('temp/file2', function(err, files) {
 
 
 
+        });
+
+        //filesEE.emit('json_complete'); // trigger files_ready event
+
     });
-  
-  //filesEE.emit('json_complete'); // trigger files_ready event
-  
-});
+
+};

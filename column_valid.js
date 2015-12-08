@@ -1,25 +1,34 @@
+/*jslint node: true */
+"use strict";
+
 var fs = require('fs');
 var pg = require('pg');
 
-var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
+module.exports = function() {
 
-var contents = fs.readFileSync('columnvalid.sql', 'utf8');
+    var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
 
-//hack to get around 'sequence' field name 
-var res = contents.replace(/sequence/g, "zyx");
-res = res.replace(/seq/g, "moeseq");
-res = res.replace(/zyx/g, "sequence");
+    var contents = fs.readFileSync('columnvalid.sql', 'utf8');
 
-//console.log(res);
+    //hack to get around 'sequence' field name 
+    var res = contents.replace(/sequence/g, "zyx");
+    res = res.replace(/seq/g, "moeseq");
+    res = res.replace(/zyx/g, "sequence");
 
-var conString = "postgres://"+obj.name+":"+obj.password+"@"+obj.host+":"+obj.port+"/"+obj.db;
+    //console.log(res);
 
-var client = new pg.Client(conString);
+    var conString = "postgres://" + obj.name + ":" + obj.password + "@" + obj.host + ":" + obj.port + "/" + obj.db;
 
-client.connect();
+    var client = new pg.Client(conString);
 
-var query = client.query(contents); 
+    client.connect();
 
-var query2 = client.query(res); 
+    var query = client.query(contents);
 
-query2.on('end', function() { client.end(); });
+    var query2 = client.query(res);
+
+    query2.on('end', function() {
+        client.end();
+    });
+
+};

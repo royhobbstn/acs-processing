@@ -3,11 +3,11 @@ read files in directory, record all column names, create sql statements
 -----------
 X - don't need to run again
 ------
-
+CREATE INDEX.JS
 
 --DL AND EXTRACT--
 X dl_scan_files.js - downloads all needed files - these are one time files like table structures - not geo specific
-X dl_and_extract.js - unzips files
+X dl_and_extract.js ca co ne - unzips files (note parameters)
 
 --SCAFFOLD--
 X scan_files.js - creates scaffold.sql, createtables.sql an columnvalid.sql (DONT RUN AGAIN.  Run once vs any one state.  All other use cases can use the generated SQL files.)
