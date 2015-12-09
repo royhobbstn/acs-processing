@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/royhobbstn/acs-processing#readme",
   "dependencies": {
+    "es6-promise": "^3.0.2",
     "iconv-lite": "^0.4.13",
     "mkdirp": "^0.5.1",
     "pg": "^4.4.3",
