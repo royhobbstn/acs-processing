@@ -4,7 +4,9 @@
 var fs = require('fs');
 var pg = require('pg');
 
-module.exports = function() {
+module.exports = function(filesEEG, winston) {
+  
+  console.log('begin create tables');
 
     var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
 
@@ -22,6 +24,8 @@ module.exports = function() {
 
     query.on('end', function() {
         client.end();
+      console.log('end create tables');
+      filesEEG.emit('streamline');
     });
 
 };

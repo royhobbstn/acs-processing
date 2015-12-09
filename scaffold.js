@@ -4,8 +4,7 @@
 var fs = require('fs');
 var pg = require('pg');
 
-module.exports = function() {
-
+module.exports = function(filesEEG, winston) {
 
     var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
 
@@ -33,6 +32,8 @@ module.exports = function() {
 
     query3.on('end', function() {
         client.end();
+            winston.info('end scaffolding');
+      filesEEG.emit('create_meta');
     });
 
 };

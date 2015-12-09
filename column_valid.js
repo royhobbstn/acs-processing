@@ -3,8 +3,11 @@
 
 var fs = require('fs');
 var pg = require('pg');
+var Promise = require('es6-promise').Promise;
 
-module.exports = function() {
+module.exports = function(filesEEG, winston) {
+  
+  console.log('beginning validate columns');
 
     var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
 
@@ -23,12 +26,41 @@ module.exports = function() {
 
     client.connect();
 
-    var query = client.query(contents);
+    var promise1 = new Promise(function(resolve, reject) {
 
-    var query2 = client.query(res);
+        var query1 = client.query(contents);
 
-    query2.on('end', function() {
-        client.end();
+        query1.on('end', function() {
+            client.end();
+            console.log('estimates columns validated');
+            resolve("");
+        });
+
+    });
+    var promise2 = new Promise(function(resolve, reject) {
+
+        var query2 = client.query(res);
+
+        query2.on('end', function() {
+            client.end();
+            console.log('moe columns validated');
+            resolve("");
+        });
+
     });
 
+
+    client.on('drain', function(){
+      client.end.bind(client);
+      console.log('closing connection');
+
+    }); //disconnect client when all queries are finished
+
+
+    //wait for both promises to complete
+    Promise.all([promise1, promise2]).then(function(values) {
+        console.log('column validation complete!;');
+            filesEEG.emit('create_tables');
+        
+    });
 };

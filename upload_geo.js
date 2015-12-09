@@ -4,13 +4,15 @@
 var fs = require('fs');
 var pg = require('pg');
 
-module.exports = function(st_string) {
+module.exports = function(st_string, filesEEG, winston) {
 
-
+  console.log('uploading geo files');
 
     var j; //loop var
     var i; //loop var
 
+    var countcompleted=0;
+  
     var states = st_string.split(",");
     if (st_string === '') {
         states = [];
@@ -19,6 +21,7 @@ module.exports = function(st_string) {
     //no state arguments.  end
     if (states.length === 0) {
         console.log('missing state argument.  program exiting');
+            winston.info('missing state argument.  program exiting');
         process.exit();
     }
 
@@ -28,6 +31,7 @@ module.exports = function(st_string) {
             //valid state
         } else {
             console.log('one or more of your state codes are not valid');
+                      winston.info('one or more of your state codes are not valid');
             process.exit();
         }
 
@@ -53,16 +57,29 @@ module.exports = function(st_string) {
 
             var stream = client.query(copyFrom('COPY data.geo FROM STDIN USING DELIMITERS \',\' CSV'));
             var fileStream = fs.createReadStream('temp/file1/g20145' + state + '.csv')
-
-            fileStream.pipe(stream);
-            fileStream.on('end', done)
+            fileStream.on('end', done);
+            fileStream.on('end', function(){
+              countcompleted++;
+              console.log(state + ' geo uploaded.');
+              winston.info(state + ' geo uploaded.');
+                  if(countcompleted===states.length){
+        //this is bad - but since cant get callback to work on pg query
+        console.log('uploading geo files completed');
+                    winston.info('uploading geo files completed');
+        filesEEG.emit('upload_files');
+        //go to upload files (almost) immediately.  *SHOULD* be okay because files will always take longer to load than geo. Right?  Right???
+      }
+            })
             fileStream.on('error', done);
+            fileStream.pipe(stream);
 
+                    
         });
     }
 
     for (i = 0; i < states.length; i = i + 1) {
         dumpgeo(states[i]);
+
     }
 
 

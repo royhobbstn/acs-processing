@@ -6,7 +6,9 @@ var fs = require('fs');
 var iconvlite = require('iconv-lite');
 
 
-module.exports = function(st_string) {
+module.exports = function(st_string, filesEEG, winston) {
+  
+  console.log('begin transliterating files');
 
     var j; //loop var
     var i; //loop var
@@ -38,7 +40,7 @@ module.exports = function(st_string) {
 
     } //end j loop
 
-  
+
     function readFileSync_encoding(filename, encoding) {
         var content = fs.readFileSync(filename);
         return iconvlite.decode(content, encoding);
@@ -48,8 +50,15 @@ module.exports = function(st_string) {
         var trans_content = readFileSync_encoding('temp/file1/g20145' + states[i] + '.csv', 'utf8');
         //output sql to file that can be read
         fs.writeFileSync('temp/file1/g20145' + states[i] + '.csv', trans_content);
-        console.log(states[i] + ' geo written');
+
+
+        if (i === (states.length-1)) {
+            //if last state, then move on to next module
+            console.log('end transliterating files');
+      winston.info('end transliterating files');
+            filesEEG.emit('upload_geo');
+        }
     } //end i loop
 
-  
+
 }; //end module

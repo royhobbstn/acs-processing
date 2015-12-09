@@ -8,7 +8,7 @@ var filesEE = new EventEmitter();
 var X = require('xlsx');
 var pg = require('pg');
 
-module.exports = function() {
+module.exports = function(filesEEG, winston) {
 
     var insert_cc = "";
     var insert_ct = "";
@@ -87,8 +87,6 @@ module.exports = function() {
 
     var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
 
-    var contents = fs.readFileSync('columnvalid.sql', 'utf8');
-
 
     var conString = "postgres://" + obj.name + ":" + obj.password + "@" + obj.host + ":" + obj.port + "/" + obj.db;
 
@@ -101,6 +99,8 @@ module.exports = function() {
 
     query.on('end', function() {
         client.end();
+            winston.info('end create_meta');
+        filesEEG.emit('geo_clean');
     });
 
 };

@@ -7,12 +7,32 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var unzip = require('unzip');
 
+var EventEmitterG = require('events').EventEmitter;
+var filesEEG = new EventEmitterG();
+
+var winston = require('winston');
+ 
+//setup logfile
+try {
+    fs.unlinkSync('somefile.log');
+} catch (e) {
+    if(e){
+      console.log("logfile doesn't exist:  creating.");
+    }
+}
+
+winston.add(winston.transports.File, { filename: 'somefile.log' });
+  winston.remove(winston.transports.Console);
+
+
+  winston.info('Logfile Created!');
+ 
 
 //index.js 
 
 //CONNECTION STRING (TO DO LATER)
 //if omitted, will read connection json file
-//-h 54.69.15.55 -p 5432 -u postgres -w eAs456!!$ 
+//-h 54.69.15.55 -p 5432 -u postgres -w eAs456!!$ -d acs1014
 
 //OPTIONS (TO DO LATER)
 //-l load & unzip data to disk only  ::stops after dl_and_extract.js
@@ -24,9 +44,9 @@ var unzip = require('unzip');
 //-s ne,ca,fl   ::all lower case.  comma separated.  no spaces.
 //-s all ::for everything
 
-var statestring="";
+var statestring = "";
 
-if(process.argv.indexOf("-s") != -1){ //does our flag exist?
+if (process.argv.indexOf("-s") != -1) { //does our flag exist?
     statestring = process.argv[process.argv.indexOf("-s") + 1]; //grab the next item
 }
 
@@ -47,16 +67,66 @@ var create_tables = require('./create_tables.js');
 var streamline = require('./streamline.js');
 var cleanup = require('./cleanup.js');
 
-dl_scan_files();
-dl_and_extract(statestring);
-scaffold();
-create_meta();
-geo_clean(statestring);
-upload_geo(statestring);
-upload_files();
-geo_operate();
-column_valid();
-create_tables();
-streamline();
-cleanup();
+winston.info('dl_scan_files called');
+dl_scan_files(filesEEG, winston);
 
+filesEEG.on('dl_and_extract', function() {
+    winston.info('dl_and_extract called');
+    dl_and_extract(statestring, filesEEG, winston);
+});
+
+filesEEG.on('scaffold', function() {
+    winston.info('scaffold called');
+    scaffold(filesEEG, winston);
+});
+
+filesEEG.on('create_meta', function() {
+    winston.info('create_meta called');
+    create_meta(filesEEG, winston);
+});
+
+filesEEG.on('geo_clean', function() {
+    winston.info('geo_clean called');
+    geo_clean(statestring, filesEEG, winston);
+});
+  
+filesEEG.on('upload_geo', function() {
+    winston.info('upload_geo called');
+    upload_geo(statestring, filesEEG, winston);
+});
+
+filesEEG.on('upload_files', function() {
+    winston.info('upload_files called');
+    upload_files(statestring, filesEEG, winston);
+});
+
+filesEEG.on('geo_operate', function() {
+    winston.info('geo_operate called');
+    geo_operate(filesEEG, winston);
+});
+
+
+//the choke point.  Need to wait until all files done 
+
+
+filesEEG.on('column_valid', function() {
+    winston.info('column_valid called');
+column_valid(filesEEG, winston);
+});
+
+filesEEG.on('create_tables', function() {
+    winston.info('create_tables called');
+create_tables(filesEEG, winston);
+});
+
+filesEEG.on('streamline', function() {
+    winston.info('streamline called');
+streamline(filesEEG, winston);
+  });
+  
+filesEEG.on('cleanup', function() {
+    winston.info('cleanup called');
+cleanup(filesEEG, winston);
+   });
+   
+  

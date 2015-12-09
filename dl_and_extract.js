@@ -7,8 +7,10 @@ var mkdirp = require('mkdirp');
 var unzip = require('unzip');
 
 
-module.exports = function(st_string) {
+module.exports = function(st_string, filesEEG, winston) {
 
+    var unzippedcount = 0;
+    var maxunzipped = 0;
 
     //create temp directories
     mkdirp('temp', function(err) {
@@ -70,6 +72,7 @@ module.exports = function(st_string) {
 
     }
 
+    maxunzipped = (states.length) * 2;
 
     for (i = 0; i < states.length; i = i + 1) {
 
@@ -242,11 +245,18 @@ module.exports = function(st_string) {
                     console.log(processing + ' ' + geostring + ' written!');
 
 
-                    fs.createReadStream('temp/' + processing + geostring + '.zip').pipe(unzip.Extract({
+
+                    var unzipStream = fs.createReadStream('temp/' + processing + geostring + '.zip').pipe(unzip.Extract({
                         path: 'temp/' + tempfoldername
                     }));
-                    console.log(processing + geostring + ' unzipped!');
-                    //create temp directory
+
+
+                    unzipStream.on('close', function() {
+
+                        console.log(processing + geostring + ' unzipped!');
+                        unzippedcount++;
+
+                    });
 
 
                 });
@@ -256,12 +266,20 @@ module.exports = function(st_string) {
         makerequest(processing, '_All_Geographies_Not_Tracts_Block_Groups', 'file1');
         makerequest(processing, '_Tracts_Block_Groups_Only', 'file2');
 
-
-
-
-
-
     } //end i loop
 
+
+    //check that all files were downloaded and unzipped before moving on to scaffolding
+    function check() {
+
+        if (unzippedcount < maxunzipped) {
+            setTimeout(check, 1000); // setTimeout(func, timeMS, params...)
+        } else {
+            // Set location on form here if it isn't in getLocation()
+            filesEEG.emit('scaffold');
+        }
+    }
+
+    check();
 
 }; //end module

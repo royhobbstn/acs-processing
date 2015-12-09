@@ -4,7 +4,9 @@
 var fs = require('fs');
 var pg = require('pg');
 
-module.exports = function() {
+module.exports = function(filesEEG, winston) {
+  winston.info('begin geo_operate');
+  console.log('begin geo_operate');
 
     var obj = JSON.parse(fs.readFileSync('connection.json', 'utf8'));
 
@@ -30,6 +32,10 @@ module.exports = function() {
 
     query.on('end', function() {
         client.end();
+      console.log('end geo_operate');
+      winston.info('end geo_operate');
+
+      filesEEG.emit('column_valid');
     });
 
 };

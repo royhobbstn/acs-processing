@@ -7,7 +7,7 @@ var mkdirp = require('mkdirp');
 var unzip = require('unzip');
 
 
-module.exports = function() {
+module.exports = function(filesEEG, winston) {
 
 
     //create temp directory
@@ -32,18 +32,21 @@ module.exports = function() {
                         path: 'scan/unzip'
                     }));
                     console.log('unzipped template file');
+
+                    request('http://www2.census.gov/programs-surveys/acs/summary_file/2014/documentation/user_tools/ACS_5yr_Seq_Table_Number_Lookup.xls')
+                        .pipe(fs.createWriteStream('scan/ACS_5yr_Seq_Table_Number_Lookup.xls'))
+                        .on('close', function() {
+                            console.log('Metadata File Written!');
+
+                            filesEEG.emit('dl_and_extract');
+
+                        });
+
                 });
 
             });
 
-        request('http://www2.census.gov/programs-surveys/acs/summary_file/2014/documentation/user_tools/ACS_5yr_Seq_Table_Number_Lookup.xls')
-            .pipe(fs.createWriteStream('scan/ACS_5yr_Seq_Table_Number_Lookup.xls'))
-            .on('close', function() {
-                console.log('Metadata File Written!');
 
-
-
-            });
 
 
     });
