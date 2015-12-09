@@ -1,3 +1,7 @@
+#! /usr/bin/env node
+
+console.log('acs1014');
+
 /*jslint node: true */
 "use strict";
 
