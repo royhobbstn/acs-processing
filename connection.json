@@ -1,7 +1,7 @@
 {
   "name": "postgres",
   "password": "postgres",
-  "host": "54.201.23.135",
+  "host": "acs1014.c3w3zliliagq.us-west-2.rds.amazonaws.com",
   "port": "5432",
   "db": "acs1014"
 }

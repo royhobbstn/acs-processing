@@ -35,7 +35,7 @@ module.exports = function(filesEEG, winston) {
       console.log('end geo_operate');
       winston.info('end geo_operate');
 
-      filesEEG.emit('column_valid');
+      filesEEG.emit('create_tables');
     });
 
 };

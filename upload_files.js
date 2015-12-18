@@ -145,9 +145,10 @@ totalfiles++;
   //wait for count to increase to max
     //check that all files were downloaded and unzipped before moving on to scaffolding
     function check() {
-      winston.info('completed files: ' + completedfiles);
-      winston.info('total files: ' + totalfiles);
-
+      winston.info('u_completed files: ' + completedfiles);
+      winston.info('u_total files: ' + totalfiles);
+      winston.info('u_completed files: ' + completedfiles);
+      winston.info('u_total files: ' + totalfiles);
           if (completedfiles < ((states.length)*484)) {
             setTimeout(check, 1000); // setTimeout(func, timeMS, params...)
         } else {

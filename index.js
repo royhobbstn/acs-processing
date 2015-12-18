@@ -66,7 +66,7 @@ var geo_clean = require('./geo_clean.js');
 var upload_geo = require('./upload_geo.js');
 var upload_files = require('./upload_files.js');
 var geo_operate = require('./geo_operate.js');
-var column_valid = require('./column_valid.js');
+var replace_dot = require('./replace_dot.js')
 var create_tables = require('./create_tables.js');
 var streamline = require('./streamline.js');
 var cleanup = require('./cleanup.js');
@@ -94,6 +94,11 @@ filesEEG.on('geo_clean', function() {
     geo_clean(statestring, filesEEG, winston);
 });
   
+filesEEG.on('replace_dot', function() {
+    winston.info('replace_dot called');
+replace_dot(statestring, filesEEG, winston);
+});
+
 filesEEG.on('upload_geo', function() {
     winston.info('upload_geo called');
     upload_geo(statestring, filesEEG, winston);
@@ -113,10 +118,7 @@ filesEEG.on('geo_operate', function() {
 //the choke point.  Need to wait until all files done 
 
 
-filesEEG.on('column_valid', function() {
-    winston.info('column_valid called');
-column_valid(filesEEG, winston);
-});
+
 
 filesEEG.on('create_tables', function() {
     winston.info('create_tables called');

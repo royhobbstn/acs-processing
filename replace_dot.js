@@ -1,13 +1,15 @@
 /*jslint node: true */
 "use strict";
 
-var tr = require('transliteration');
 var fs = require('fs');
-var iconvlite = require('iconv-lite');
-
+var pg = require('pg');
+var copyFrom = require('pg-copy-streams').from;
+var Promise = require('es6-promise').Promise;
+var replace = require('replace');
 
 module.exports = function(st_string, filesEEG, winston) {
-  
+
+
   console.log('begin transliterating files');
 
     var j; //loop var
@@ -41,24 +43,109 @@ module.exports = function(st_string, filesEEG, winston) {
     } //end j loop
 
 
-    function readFileSync_encoding(filename, encoding) {
-        var content = fs.readFileSync(filename);
-        return iconvlite.decode(content, encoding);
+
+
+console.log('begin clean data files');
+//winston.info('begin upload_files');
+
+
+
+var totalfiles = 0;
+var completedfiles = 0;
+
+//All other Geo's File
+fs.readdir('temp/file1', function(err, files) {
+
+    if (err) throw err;
+    files.forEach(function(file) {
+
+        var fntext = file.split('.');
+
+
+        //grab seq number
+        var thefn = parseInt(fntext[0].substring(9, 12));
+
+        //only doing estimate files and moe files - no geos
+        if (fntext[0][0] === 'e' || fntext[0][0] === 'm') {
+            totalfiles++;
+
+            //http://stackoverflow.com/questions/14177087/replace-a-string-in-a-file-with-nodejs
+
+replace({
+    regex: ",\\.",
+    replacement: ",",
+    paths: ['temp/file1/' + file],
+    recursive: true,
+    silent: false,
+});
+          completedfiles++;
+
+        }
+
+
+
+    });
+
+});
+
+
+
+//Tracts BGs file
+fs.readdir('temp/file2', function(err, files) {
+
+    if (err) throw err;
+    files.forEach(function(file) {
+
+        var fntext = file.split('.');
+
+
+        //grab seq number
+        var thefn = parseInt(fntext[0].substring(9, 12));
+
+        //only doing estimate files and moe files - no geos
+        if (fntext[0][0] === 'e' || fntext[0][0] === 'm') {
+            totalfiles++;
+
+
+replace({
+    regex: ",\\.",
+    replacement: ",",
+    paths: ['temp/file2/' + file],
+    recursive: true,
+    silent: false,
+});
+
+completedfiles++;
+
+        }
+
+
+
+    });
+
+});
+
+
+
+//wait for count to increase to max
+//check that all files were downloaded and unzipped before moving on to scaffolding
+function check() {
+    winston.info('completed files: ' + completedfiles);
+    winston.info('total files: ' + totalfiles);
+    console.log('completed files: ' + completedfiles);
+    console.log('total files: ' + totalfiles);
+    if (completedfiles < ((states.length) * 484)) { 
+        setTimeout(check, 1000); 
+    } else {
+      winston.info('end replace_dot');
+        winston.info('calling upload_geo');
+        filesEEG.emit('upload_geo');
     }
 
-    for (i = 0; i < states.length; i = i + 1) {
-        var trans_content = readFileSync_encoding('temp/file1/g20145' + states[i] + '.csv', 'utf8');
-        //output sql to file that can be read
-        fs.writeFileSync('temp/file1/g20145' + states[i] + '.csv', trans_content);
+
+}
+
+check();
 
 
-        if (i === (states.length-1)) {
-            //if last state, then move on to next module
-            console.log('end transliterating files');
-      winston.info('end transliterating files');
-            filesEEG.emit('replace_dot');
-        }
-    } //end i loop
-
-
-}; //end module
+};
