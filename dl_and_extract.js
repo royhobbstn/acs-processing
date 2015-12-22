@@ -273,6 +273,10 @@ module.exports = function(st_string, filesEEG, winston) {
     function check() {
 
         if (unzippedcount < maxunzipped) {
+              winston.info('unzipped files: ' + unzippedcount);
+    winston.info('total files: ' + maxunzipped);
+    console.log('unzipped files: ' + unzippedcount);
+    console.log('total files: ' + maxunzipped);
             setTimeout(check, 1000); // setTimeout(func, timeMS, params...)
         } else {
             // Set location on form here if it isn't in getLocation()

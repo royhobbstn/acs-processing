@@ -1,7 +1,7 @@
 {
   "name": "postgres",
   "password": "postgres",
-  "host": "acs1014.c3w3zliliagq.us-west-2.rds.amazonaws.com",
+  "host": "localhost",
   "port": "5432",
   "db": "acs1014"
 }

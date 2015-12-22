@@ -1,6 +1,6 @@
 {
   "name": "acs1014",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "automatically load acs data into a postgresql database",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

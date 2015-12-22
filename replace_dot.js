@@ -138,7 +138,9 @@ function check() {
         setTimeout(check, 1000); 
     } else {
       winston.info('end replace_dot');
+      console.log('end replace_dot');
         winston.info('calling upload_geo');
+      console.log('calling upload_geo');
         filesEEG.emit('upload_geo');
     }
 
