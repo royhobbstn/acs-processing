@@ -36,7 +36,7 @@ winston.add(winston.transports.File, { filename: 'somefile.log' });
 
 //CONNECTION STRING (TO DO LATER)
 //if omitted, will read connection json file
-//-h 54.69.15.55 -p 5432 -u postgres -w eAs456!!$ -d acs1014
+//-h gis.dola.colorado.gov -p 5432 -u postgres -w password -d acs1014
 
 //OPTIONS (TO DO LATER)
 //-l load & unzip data to disk only  ::stops after dl_and_extract.js
@@ -56,7 +56,7 @@ if (process.argv.indexOf("-s") != -1) { //does our flag exist?
 
 
 //EXAMPLE
-//node index.js host=54.69.15.55 port=5432 user=postgres password=eAs456!!$ -k -s states=ne,ca,tx
+//node index.js host=gis.dola.colorado.gov port=5432 user=postgres password=password -k -s states=ne,ca,tx
 
 var dl_scan_files = require('./dl_scan_files.js');
 var dl_and_extract = require('./dl_and_extract.js');

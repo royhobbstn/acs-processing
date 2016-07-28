@@ -22,7 +22,7 @@ acs1014 -s ne,de,fl
 ### Roadmap
 
 #### CONNECTION STRING (TO DO LATER)
- - -h 54.69.15.55 -p 5432 -u postgres -w eAs456!!$ -d acs1014
+ - -h gis.dola.colorado.gov -p 5432 -u postgres -w eAs456!!$ -d acs1014
 
 #### OPTIONS (TO DO LATER)
  - -l load & unzip data to disk only  ::only loads raw data to hard drive
